@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Yelp Dataset Visualization Project</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/reveal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/theme/sky.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/lib/js/head.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/js/reveal.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vega"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed"></script>
+
+    <link rel="stylesheet/less" type="text/css" href="styles.less" />
+
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section data-markdown="my_presentation.md"></section>
+            <section>
+                <div style="width:100%; height:100%; display: relative;" id="vis"></div>
+                    <!-- This is from the example embedded vega-lite demo -->
+                    <script type="text/javascript">
+                                var yourVlSpec = {
+                                    $schema: 'https://vega.github.io/schema/vega-lite/v3.0.json',
+                                    description: 'Yelp Business dataset visualization.',
+                                    data: {
+                                        name: 'yelp_business', url: './yelp_business.csv',
+                                    },
+                                    "hconcat": [
+                                        {
+                                            "mark": "bar",
+                                            /*"transform": [
+                                                { "filter": { "selection": "zone_choice" } }
+                                            ],*/
+                                            "encoding": {
+                                                "x": {
+                                                    "field": "stars",
+                                                    "type": "quantitative"
+                                                },
+                                                "y": {
+                                                    "field": "business_id",
+                                                    "aggregate": "count",
+                                                    "type": "quantitative"
+                                                }
+                                            }
+                                        }
+                                    ],
+                                };
+                                var embedded = vegaEmbed('#vis', yourVlSpec);
+                        </script>
+            </section>
+        </div>
+    </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
+    <script>
+            Reveal.initialize({
+                dependencies: [
+                    { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/markdown/marked.js' },
+                    { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/markdown/markdown.min.js' },
+                    { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/notes/notes.min.js', async: true },
+                    { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/highlight/highlight.min.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: '/reveal.js-plugins/chalkboard/chalkboard.js' },
+                    { src: "{{ '/assets/paper-figures.js' | relative_url }}", async: true},
+                    { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/plugin/math/math.min.js', async: true }
+                ],
+                keyboard: {
+                    67: function() { RevealChalkboard.toggleNotesCanvas() },	// toggle notes canvas when 'c' is pressed
+                    66: function() { RevealChalkboard.toggleChalkboard() },	// toggle chalkboard when 'b' is pressed
+                    46: function() { RevealChalkboard.clear() },	// clear chalkboard when 'DEL' is pressed
+                     8: function() { RevealChalkboard.reset() },	// reset chalkboard data on current slide when 'BACKSPACE' is pressed
+                    68: function() { RevealChalkboard.download() },	// downlad recorded chalkboard drawing when 'd' is pressed
+                },
+                center: false,
+                transition: 'none',
+                backgroundTransition: 'none'
+            });
+    </script>
+</body>
+
+</html>

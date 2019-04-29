@@ -1,12 +1,12 @@
-# Hi There
+## Yelp Dataset Visualization
 
-This is a presentation
+By 
 
-See?
+**Harshit Gupta**
 
 ---
 
-**This is a presentation**
+In this presentation I will vi
 
 <p class="fragment">Hello. This is from a paragraph.</p>
 
