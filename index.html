@@ -6,7 +6,7 @@
     <title>Yelp Dataset Visualization Project</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/reveal.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/theme/sky.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/theme/solarized.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
 
@@ -28,41 +28,279 @@
         <div class="slides">
             <section data-markdown="my_presentation.md"></section>
             <section>
+                <h4>
+                    Analysis of Businesses based on Ratings
+                </h4>
+                <h5>1. Top 10 most reviewed Businesses</h5>
                 <div style="width:100%; height:100%; display: relative;" id="vis"></div>
                     <!-- This is from the example embedded vega-lite demo -->
                     <script type="text/javascript">
-                                var yourVlSpec = {
+                        var yourVlSpec = {
+                            $schema: 'https://vega.github.io/schema/vega-lite/v3.0.json',
+                            description: 'Yelp Business dataset visualization.',
+                            data: {
+                                name: 'yelp_business', url: './yelp_business.csv',
+                            },
+                            "columns": 2,
+                            "concat": [
+                                {
+                                    "selection": {
+                                        "select": {
+                                            "type": "multi",
+                                            "encodings": ["x"]
+                                        }
+                                    },
+                                    "mark": "bar",
+                                    "title": "Distribution of Businesses for Ratings",
+                                    "encoding": {
+                                        "x": {
+                                            "field": "stars",
+                                            "type": "quantitative",
+                                            "axis": {
+                                                "title": "Ratings of Businesses"
+                                            }
+                                        },
+                                        "y": {
+                                            "field": "business_id",
+                                            "aggregate": "count",
+                                            "type": "quantitative",
+                                            "axis": {
+                                                "title": "Number of Businesses"
+                                            }
+                                        },
+                                        "color": {"field": "stars", "type": "ordinal"}
+                                    }
+                                },
+                                {
+                                    "title": "Top 10 Businesses per Rating",
+                                    "transform": [
+                                        {
+                                                "filter": {
+                                                "selection": "select"
+                                            }
+                                        },
+                                        {
+                                            "joinaggregate": [{"op": "sum", "field": "review_count", "as": "Number"}],
+                                            "groupby": ["business_id"]
+                                        },
+                                        {
+                                            "window": [{"op": "row_number", "as": "rank"}],
+                                            "sort": [{"field": "Number", "order": "descending"}]
+                                        },
+                                        {
+                                            "filter": "datum.rank <= 10"
+                                        }
+                                    ],
+                                    "mark": "circle",
+                                    "encoding": {
+                                        "y": {
+                                            "field": "name",
+                                            "type": "nominal",
+                                            "sort": {"encoding": "x", "order": "descending"},
+                                            "axis": {"title": "Business name"}
+                                        },
+                                        "x": {
+                                            "field": "review_count",
+                                            "type": "quantitative",
+                                            "axis": {"title": "Number of Reviews"}
+                                        },
+                                        "detail": {
+                                            "field": "city", "type": "nominal"
+                                        },
+                                        "color": {"field": "review_count", "type": "ordinal", "axis": {"title": "Business name"}}
+                                    }
+                                }
+                            ],
+                            "resolve": {"scale": {"color": "independent"}}
+                        };
+                        var embedded = vegaEmbed('#vis', yourVlSpec);
+                </script>
+            </section>
+            <section data-markdown="my_presentation - Copy.md"></section>
+            <section>
+                    <h4>
+                        Analysis of Businesses based on Cities
+                    </h4>
+                    <h5>2. Top 10 most reviewed Cities</h5>
+                    <div style="width:100%; height:100%; display: relative;" id="visC"></div>
+                            <!-- This is from the example embedded vega-lite demo -->
+                            <script type="text/javascript">
+                                var yourVlSpecC = {
                                     $schema: 'https://vega.github.io/schema/vega-lite/v3.0.json',
                                     description: 'Yelp Business dataset visualization.',
                                     data: {
                                         name: 'yelp_business', url: './yelp_business.csv',
                                     },
-                                    "hconcat": [
+                                    "columns": 2,
+                                    "concat": [
                                         {
+                                            "selection": {
+                                                "select": {
+                                                    "type": "multi",
+                                                    "encodings": ["x"]
+                                                }
+                                            },
                                             "mark": "bar",
-                                            /*"transform": [
-                                                { "filter": { "selection": "zone_choice" } }
-                                            ],*/
+                                            "title": "Distribution of Ratings",
                                             "encoding": {
                                                 "x": {
                                                     "field": "stars",
-                                                    "type": "quantitative"
+                                                    "type": "quantitative",
+                                                    "axis": {
+                                                        "title": "Ratings of Businesses"
+                                                    }
                                                 },
                                                 "y": {
                                                     "field": "business_id",
                                                     "aggregate": "count",
-                                                    "type": "quantitative"
-                                                }
+                                                    "type": "quantitative",
+                                                    "axis": {
+                                                        "title": "Number"
+                                                    }
+                                                },
+                                                "color": {"field": "stars", "type": "ordinal"}
                                             }
+                                        },
+                                        {
+                                            "title": "Cities of Reviewed Businesses ",
+                                            "transform": [
+                                                {
+                                                    "filter": {
+                                                    "selection": "select"
+                                                }
+                                                },
+                                                {
+                                                    "joinaggregate": [{"op": "sum", "field": "review_count", "as": "NumberC"}],
+                                                    "groupby": ["city"]
+                                                },
+                                                {
+                                                    "window": [{"op": "rank", "as": "rankC"}],
+                                                    "sort": [{"field": "NumberC", "order": "descending"}]
+                                                },
+                                                {
+                                                    "filter": "datum.rankC <= 10"
+                                                }
+                                            ],
+                                            "mark": "circle",
+                                            "encoding": {
+                                                "y": {
+                                                    "field": "city",
+                                                    "type": "nominal",
+                                                    "sort": {"encoding": "x", "order": "descending"},
+                                                    "axis": {"title": "City name"}
+                                                },
+                                                "x": {
+                                                    "field": "rankC",
+                                                    "type": "quantitative",
+                                                    "axis": {"title": "Number of Reviews"}
+                                                },
+                                                "detail": {
+                                                    "field": "state", "type": "nominal"
+                                                }
+                                            },
+                                            "color": {"field": "review_count", "type": "ordinal"}
                                         }
                                     ],
+                                    "resolve": {"scale": {"color": "independent"}}
                                 };
-                                var embedded = vegaEmbed('#vis', yourVlSpec);
+                                var embedded = vegaEmbed('#visC', yourVlSpecC);
                         </script>
+            </section>
+            <section data-markdown="my_presentation - Copy - Copy.md"></section>
+            <section>
+                    <h4>
+                        Analysis of Businesses based on States
+                    </h4>
+                    <h5>2. Top 10 most reviewed States</h5>
+                    <div style="width:100%; height:100%; display: relative;" id="visS"></div>
+                            <!-- This is from the example embedded vega-lite demo -->
+                            <script type="text/javascript">
+                                var yourVlSpecS = {
+                                    $schema: 'https://vega.github.io/schema/vega-lite/v3.0.json',
+                                    description: 'Yelp Business dataset visualization.',
+                                    data: {
+                                        name: 'yelp_business', url: './yelp_business.csv',
+                                    },
+                                    "columns": 2,
+                                    "concat": [
+                                        {
+                                            "selection": {
+                                                "select": {
+                                                    "type": "multi",
+                                                    "encodings": ["x"]
+                                                }
+                                            },
+                                            "mark": "bar",
+                                            "title": "Distribution of Ratings",
+                                            "encoding": {
+                                                "x": {
+                                                    "field": "stars",
+                                                    "type": "quantitative",
+                                                    "axis": {
+                                                        "title": "Ratings of Businesses"
+                                                    }
+                                                },
+                                                "y": {
+                                                    "field": "business_id",
+                                                    "aggregate": "count",
+                                                    "type": "quantitative",
+                                                    "axis": {
+                                                        "title": "Number"
+                                                    }
+                                                },
+                                                "color": {"field": "stars", "type": "ordinal"}
+                                            }
+                                        },
+                                        {
+                                            "title": "States of Reviewed Businesses ",
+                                            "transform": [
+                                                {
+                                                    "filter": {
+                                                    "selection": "select"
+                                                }
+                                                },
+                                                {
+                                                    "joinaggregate": [{"op": "sum", "field": "review_count", "as": "NumberS"}],
+                                                    "groupby": ["state"]
+                                                },
+                                                {
+                                                    "window": [{"op": "row_number", "as": "rankS"}],
+                                                    "sort": [{"field": "NumberS", "order": "descending"}]
+                                                },
+                                                {
+                                                    "filter": "datum.rankS <= 11"
+                                                }
+                                            ],
+                                            "mark": "circle",
+                                            "encoding": {
+                                                "y": {
+                                                    "field": "state",
+                                                    "type": "nominal",
+                                                    "sort": {"encoding": "x", "order": "descending"},
+                                                    "axis": {"title": "State name"}
+                                                },
+                                                "x": {
+                                                    "field": "NumberS",
+                                                    "type": "quantitative",
+                                                    "axis": {"title": "Number of Reviews"}
+                                                },
+                                                "detail": {
+                                                    "field": "state", "type": "nominal"
+                                                }
+                                            },
+                                            "color": {"field": "NumberS", "type": "ordinal"}
+                                        }
+                                    ],
+                                    "resolve": {"scale": {"color": "independent"}}
+                                };
+                                var embedded = vegaEmbed('#visS', yourVlSpecS);
+                        </script>
+            </section>
+            <section>
+                <h4>Thank YOU.!!!</h4>
             </section>
         </div>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
     <script>
             Reveal.initialize({
@@ -82,9 +320,14 @@
                      8: function() { RevealChalkboard.reset() },	// reset chalkboard data on current slide when 'BACKSPACE' is pressed
                     68: function() { RevealChalkboard.download() },	// downlad recorded chalkboard drawing when 'd' is pressed
                 },
-                center: false,
-                transition: 'none',
-                backgroundTransition: 'none'
+                center: true,
+                transition: 'convex',
+                backgroundTransition: 'convex',
+                width: "100%",
+                height: "100%",
+                margin: 0,
+                minScale: 1,
+                maxScale: 1
             });
     </script>
 </body>
