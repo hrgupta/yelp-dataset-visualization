@@ -127,82 +127,68 @@
                             <!-- This is from the example embedded vega-lite demo -->
                             <script type="text/javascript">
                                 var yourVlSpecC = {
-                                    $schema: 'https://vega.github.io/schema/vega-lite/v3.0.json',
-                                    description: 'Yelp Business dataset visualization.',
-                                    data: {
-                                        name: 'yelp_business', url: './dataset/yelp_business.csv',
+                                "$schema": "https://vega.github.io/schema/vega-lite/v3.0.json",
+                                "description": "Yelp Business dataset visualization.",
+                                "data": {
+                                    "name": "yelp_business",
+                                    "url": "https://raw.githubusercontent.com/hrgupta/yelp-dataset-visualization/master/dataset/yelp_business.csv"
+                                },
+                                "columns": 2,
+                                "concat": [
+                                    {
+                                    "selection": {"select": {"type": "multi", "encodings": ["x"]}},
+                                    "mark": "bar",
+                                    "title": "Distribution of Ratings",
+                                    "encoding": {
+                                        "x": {
+                                        "field": "stars",
+                                        "type": "quantitative",
+                                        "axis": {"title": "Ratings of Businesses"}
+                                        },
+                                        "y": {
+                                        "field": "business_id",
+                                        "aggregate": "count",
+                                        "type": "quantitative",
+                                        "axis": {"title": "Number"}
+                                        },
+                                        "color": {"field": "stars", "type": "ordinal", "axis": {"title": "Ratings of Businesses"}}
+                                    }
                                     },
-                                    "columns": 2,
-                                    "concat": [
+                                    {
+                                    "title": "Cities of Reviewed Businesses ",
+                                    "transform": [
+                                        {"filter": {"selection": "select"}},
                                         {
-                                            "selection": {
-                                                "select": {
-                                                    "type": "multi",
-                                                    "encodings": ["x"]
-                                                }
-                                            },
-                                            "mark": "bar",
-                                            "title": "Distribution of Ratings",
-                                            "encoding": {
-                                                "x": {
-                                                    "field": "stars",
-                                                    "type": "quantitative",
-                                                    "axis": {
-                                                        "title": "Ratings of Businesses"
-                                                    }
-                                                },
-                                                "y": {
-                                                    "field": "business_id",
-                                                    "aggregate": "count",
-                                                    "type": "quantitative",
-                                                    "axis": {
-                                                        "title": "Number"
-                                                    }
-                                                },
-                                                "color": {"field": "stars", "type": "ordinal"}
-                                            }
+                                        "aggregate": [
+                                            {"op": "sum", "field": "review_count", "as": "NumberC"}
+                                        ],
+                                        "groupby": ["city"]
                                         },
                                         {
-                                            "title": "Cities of Reviewed Businesses ",
-                                            "transform": [
-                                                {
-                                                    "filter": {
-                                                    "selection": "select"
-                                                }
-                                                },
-                                                {
-                                                    "joinaggregate": [{"op": "sum", "field": "review_count", "as": "NumberC"}],
-                                                    "groupby": ["city"]
-                                                },
-                                                {
-                                                    "window": [{"op": "rank", "as": "rankC"}],
-                                                    "sort": [{"field": "NumberC", "order": "descending"}]
-                                                },
-                                                {
-                                                    "filter": "datum.rankC <= 10"
-                                                }
-                                            ],
-                                            "mark": "circle",
-                                            "encoding": {
-                                                "y": {
-                                                    "field": "city",
-                                                    "type": "nominal",
-                                                    "sort": {"encoding": "x", "order": "descending"},
-                                                    "axis": {"title": "City name"}
-                                                },
-                                                "x": {
-                                                    "field": "rankC",
-                                                    "type": "quantitative",
-                                                    "axis": {"title": "Number of Reviews"}
-                                                },
-                                                "detail": {
-                                                    "field": "state", "type": "nominal"
-                                                }
-                                            },
-                                            "color": {"field": "review_count", "type": "ordinal"}
-                                        }
+                                        "window": [{"op": "rank", "as": "rankC"}],
+                                        "sort": [{"field": "NumberC", "order": "descending"}]
+                                        },
+                                        {"filter": "datum.rankC <= 10"}
                                     ],
-                                    "resolve": {"scale": {"color": "independent"}}
+                                    "mark": "circle",
+                                    "encoding": {
+                                        "y": {
+                                        "field": "city",
+                                        "type": "nominal",
+                                        "sort": {"encoding": "x", "order": "descending"},
+                                        "axis": {"title": "City name"}
+                                        },
+                                        "x": {
+                                        "field": "NumberC",
+                                        "type": "quantitative",
+                                        "axis": {"title": "Number of Reviews"}
+                                        },
+                                    },
+                                    "color": {"field": "NumberC", "type": "ordinal"}
+                                    }
+                                ],
+                                "resolve": {"scale": {"color": "independent"}},
+                                "config": {}
                                 };
                                 var embedded = vegaEmbed('#visC', yourVlSpecC);
                         </script>
@@ -212,87 +198,73 @@
                     <h4>
                         Analysis of Businesses based on States
                     </h4>
-                    <h5>2. Top 10 most reviewed States</h5>
+                    <h5>3. Top 10 most reviewed States</h5>
                     <div style="width:100%; height:100%; display: relative;" id="visS"></div>
                             <!-- This is from the example embedded vega-lite demo -->
                             <script type="text/javascript">
                                 var yourVlSpecS = {
-                                    $schema: 'https://vega.github.io/schema/vega-lite/v3.0.json',
-                                    description: 'Yelp Business dataset visualization.',
-                                    data: {
-                                        name: 'yelp_business', url: './dataset/yelp_business.csv',
+                                "$schema": "https://vega.github.io/schema/vega-lite/v3.0.json",
+                                "description": "Yelp Business dataset visualization.",
+                                "data": {
+                                    "name": "yelp_business",
+                                    "url": "https://raw.githubusercontent.com/hrgupta/yelp-dataset-visualization/master/dataset/yelp_business.csv"
+                                },
+                                "columns": 2,
+                                "concat": [
+                                    {
+                                    "selection": {"select": {"type": "multi", "encodings": ["x"]}},
+                                    "mark": "bar",
+                                    "title": "Distribution of Ratings",
+                                    "encoding": {
+                                        "x": {
+                                        "field": "stars",
+                                        "type": "quantitative",
+                                        "axis": {"title": "Ratings of Businesses"}
+                                        },
+                                        "y": {
+                                        "field": "business_id",
+                                        "aggregate": "count",
+                                        "type": "quantitative",
+                                        "axis": {"title": "Number"}
+                                        },
+                                        "color": {"field": "stars", "type": "ordinal", "axis": {"title": "Ratings of Businesses"}}
+                                    }
                                     },
-                                    "columns": 2,
-                                    "concat": [
+                                    {
+                                    "title": "Cities of Reviewed Businesses ",
+                                    "transform": [
+                                        {"filter": {"selection": "select"}},
                                         {
-                                            "selection": {
-                                                "select": {
-                                                    "type": "multi",
-                                                    "encodings": ["x"]
-                                                }
-                                            },
-                                            "mark": "bar",
-                                            "title": "Distribution of Ratings",
-                                            "encoding": {
-                                                "x": {
-                                                    "field": "stars",
-                                                    "type": "quantitative",
-                                                    "axis": {
-                                                        "title": "Ratings of Businesses"
-                                                    }
-                                                },
-                                                "y": {
-                                                    "field": "business_id",
-                                                    "aggregate": "count",
-                                                    "type": "quantitative",
-                                                    "axis": {
-                                                        "title": "Number"
-                                                    }
-                                                },
-                                                "color": {"field": "stars", "type": "ordinal"}
-                                            }
+                                        "aggregate": [
+                                            {"op": "sum", "field": "review_count", "as": "NumberS"}
+                                        ],
+                                        "groupby": ["state"]
                                         },
                                         {
-                                            "title": "States of Reviewed Businesses ",
-                                            "transform": [
-                                                {
-                                                    "filter": {
-                                                    "selection": "select"
-                                                }
-                                                },
-                                                {
-                                                    "joinaggregate": [{"op": "sum", "field": "review_count", "as": "NumberS"}],
-                                                    "groupby": ["state"]
-                                                },
-                                                {
-                                                    "window": [{"op": "row_number", "as": "rankS"}],
-                                                    "sort": [{"field": "NumberS", "order": "descending"}]
-                                                },
-                                                {
-                                                    "filter": "datum.rankS <= 11"
-                                                }
-                                            ],
-                                            "mark": "circle",
-                                            "encoding": {
-                                                "y": {
-                                                    "field": "state",
-                                                    "type": "nominal",
-                                                    "sort": {"encoding": "x", "order": "descending"},
-                                                    "axis": {"title": "State name"}
-                                                },
-                                                "x": {
-                                                    "field": "NumberS",
-                                                    "type": "quantitative",
-                                                    "axis": {"title": "Number of Reviews"}
-                                                },
-                                                "detail": {
-                                                    "field": "state", "type": "nominal"
-                                                }
-                                            },
-                                            "color": {"field": "NumberS", "type": "ordinal"}
-                                        }
+                                        "window": [{"op": "rank", "as": "rankS"}],
+                                        "sort": [{"field": "NumberS", "order": "descending"}]
+                                        },
+                                        {"filter": "datum.rankS <= 10"}
                                     ],
-                                    "resolve": {"scale": {"color": "independent"}}
+                                    "mark": "circle",
+                                    "encoding": {
+                                        "y": {
+                                        "field": "state",
+                                        "type": "nominal",
+                                        "sort": {"encoding": "x", "order": "descending"},
+                                        "axis": {"title": "City name"}
+                                        },
+                                        "x": {
+                                        "field": "NumberS",
+                                        "type": "quantitative",
+                                        "axis": {"title": "Number of Reviews"}
+                                        },
+                                    },
+                                    "color": {"field": "NumberS", "type": "ordinal"}
+                                    }
+                                ],
+                                "resolve": {"scale": {"color": "independent"}},
+                                "config": {}
                                 };
                                 var embedded = vegaEmbed('#visS', yourVlSpecS);
                         </script>
